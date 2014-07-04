@@ -35,6 +35,7 @@ func main() {
 	}
 
 	type Song struct {
+		Id      int
 		Name    string
 		Artists []struct {
 			Name string
@@ -121,6 +122,7 @@ func main() {
 			p(" %s", artist.Name)
 		}
 		url := fmt.Sprintf("http://m2.music.126.net/%s/%d.mp3", enc(song.Mp3.DfsId), song.Mp3.DfsId)
+		p(" http://music.163.com/#/song?id=%d", song.Id)
 		p("\n")
 		exec.Command("mpg123", url).Run()
 	}
