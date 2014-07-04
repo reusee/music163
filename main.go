@@ -32,8 +32,11 @@ func main() {
 	}
 
 	type Song struct {
-		Name string
-		Url  string `json:"mp3Url"` // 160k的，320k要麻烦些，反正也听不出区别
+		Name    string
+		Url     string `json:"mp3Url"` // 160k的，320k要麻烦些，反正也听不出区别
+		Artists []struct {
+			Name string
+		}
 	}
 	var songs []Song
 	getSongs := func(listId string) {
@@ -94,7 +97,11 @@ func main() {
 
 	// play
 	for _, song := range songs {
-		p("%s\n", song.Name)
+		p("%s", song.Name)
+		for _, artist := range song.Artists {
+			p(" %s", artist.Name)
+		}
+		p("\n")
 		exec.Command("mpg123", song.Url).Run()
 	}
 }
