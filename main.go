@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -33,10 +36,12 @@ func main() {
 
 	type Song struct {
 		Name    string
-		Url     string `json:"mp3Url"` // 160k的，320k要麻烦些，反正也听不出区别
 		Artists []struct {
 			Name string
 		}
+		Mp3 struct {
+			DfsId uint64
+		} `json:"bMusic"`
 	}
 	var songs []Song
 	getSongs := func(listId string) {
@@ -96,12 +101,27 @@ func main() {
 	}
 
 	// play
+	enc := func(id uint64) string {
+		b1 := []byte("3go8&$8*3*3h0k(2)2")
+		b2 := []byte(fmt.Sprintf("%d", id))
+		b1Len := len(b1)
+		for i, b := range b2 {
+			b2[i] = b ^ b1[i%b1Len]
+		}
+		h := md5.New()
+		h.Write(b2)
+		res := base64.StdEncoding.EncodeToString(h.Sum(nil))
+		res = strings.Replace(res, "/", "_", -1)
+		res = strings.Replace(res, "+", "-", -1)
+		return res
+	}
 	for _, song := range songs {
 		p("%s", song.Name)
 		for _, artist := range song.Artists {
 			p(" %s", artist.Name)
 		}
+		url := fmt.Sprintf("http://m2.music.126.net/%s/%d.mp3", enc(song.Mp3.DfsId), song.Mp3.DfsId)
 		p("\n")
-		exec.Command("mpg123", song.Url).Run()
+		exec.Command("mpg123", url).Run()
 	}
 }
