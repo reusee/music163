@@ -31,6 +31,10 @@ func main() {
 			printJson = true
 		} else if arg == "random" {
 			random = true
+		} else if arg == "nao" {
+			listIds = []string{"20219787"}
+		} else if arg == "anisong" {
+			listIds = []string{"18687814", "18689435", "18678737", "18474223", "18388961", "18391086", "18389611"}
 		}
 	}
 
