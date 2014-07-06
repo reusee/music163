@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -49,6 +50,7 @@ func main() {
 		} `json:"bMusic"`
 	}
 	var songs []Song
+	var lock sync.Mutex
 	getSongs := func(listId string) {
 		// get list json
 		if len(listIds) == 0 {
@@ -78,6 +80,7 @@ func main() {
 		var result struct {
 			Result struct {
 				Tracks []Song
+				Name   string
 			}
 			Code int
 		}
@@ -87,13 +90,23 @@ func main() {
 			return
 		}
 
+		lock.Lock()
 		for _, song := range result.Result.Tracks {
 			songs = append(songs, song)
 		}
+		lock.Unlock()
+		p("%s loaded.\n", result.Result.Name)
 	}
+	wg := new(sync.WaitGroup)
+	wg.Add(len(listIds))
 	for _, id := range listIds {
-		getSongs(id)
+		go func(id string) {
+			getSongs(id)
+			wg.Done()
+		}(id)
 	}
+	wg.Wait()
+	p("playing %d songs.\n", len(songs))
 
 	// options
 	if random {
