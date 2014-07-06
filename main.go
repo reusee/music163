@@ -36,6 +36,8 @@ func main() {
 			listIds = []string{"20219787"}
 		} else if arg == "anisong" {
 			listIds = []string{"18687814", "18689435", "18678737", "18474223", "18388961", "18391086", "18389611"}
+		} else if arg == "hanae" {
+			listIds = []string{"20476220"}
 		}
 	}
 
