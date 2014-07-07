@@ -159,7 +159,7 @@ func main() {
 					artistNames = append(artistNames, artist.Name)
 				}
 				filename := fmt.Sprintf("%s - %s.mp3", strings.Join(artistNames, " "), song.Name)
-				filename = strings.Replace(filename, "/", " ", -1)
+				filename = strings.Replace(filename, string(os.PathSeparator), " ", -1)
 				// check exists
 				var exists bool
 				stat, err := os.Stat(filename)
