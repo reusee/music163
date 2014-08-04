@@ -40,7 +40,7 @@ func main() {
 		} else if arg == "nao" {
 			listIds = []string{"20219787"}
 		} else if arg == "anisong" {
-			listIds = []string{"18687814", "18689435", "18678737", "18474223", "18388961", "18391086", "18389611"}
+			listIds = []string{"18687814", "18689435", "18678737", "18474223", "18388961", "18391086", "18389611", "23681948"}
 		} else if arg == "hanae" {
 			listIds = []string{"20476220"}
 		}
@@ -163,8 +163,12 @@ func main() {
 				// check exists
 				var exists bool
 				stat, err := os.Stat(filename)
-				if err == nil && stat.Size() == song.Mp3.Size {
-					exists = true
+				if err == nil {
+					if stat.Size() == song.Mp3.Size {
+						exists = true
+					} else {
+						p("file %s length local %d info %d.\n", filename, stat.Size(), song.Mp3.Size)
+					}
 				}
 				if exists {
 					p("skip %s\n", filename)
